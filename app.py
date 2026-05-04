@@ -4,7 +4,9 @@ import joblib
 model = joblib.load("model.pkl")
 
 def classify_ticket(category, instruction):
-    prediction_probs = model.predict_proba([[category, instruction]])[0]
+    #Pipeline handles Preprocessing and Transformation automatically
+    input_df = pd.DataFrame([[instruction, category]], columns=['instruction', 'category'])
+    prediction_probs = model.predict_proba(input_df)[0]
 
     class_names = model.classes_
     confidences = {class_names[i]: float(prediction_probs[i]) for i in range(len(class_names))}
