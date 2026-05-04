@@ -1,7 +1,7 @@
 import gradio as gr
 import joblib
 
-model = joblib.load("model.plk")
+model = joblib.load("model.pkl")
 
 def classify_ticket(category, instruction):
     prediction_probs = model.predict_proba([[category, instruction]])[0]
