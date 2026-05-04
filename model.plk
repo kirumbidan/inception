@@ -1,0 +1,39 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+
+df = pd.read_csv('Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv')
+
+features = ['instruction', 'category']
+X = df[features]
+y = df['intent']
+
+X_train, X_valid, y_train, y_valid = train_test_split(X, y,
+                                                      train_size=0.8,
+                                                      random_state=0)
+
+tfidf_preprocessor = ColumnTransformer(
+    transformers=[
+        ('subject_tfidf', TfidfVectorizer(stop_words='english', max_features=500), 'category'),
+        ('desc_tfidf', TfidfVectorizer(stop_words='english', max_features=1000), 'instruction')
+    ],
+    remainder='passthrough'
+)
+
+pipe = Pipeline(steps=[
+    ('preprocessor', tfidf_preprocessor),
+    ('model', RandomForestClassifier(n_estimators=500, oob_score=True, random_state=0))
+])
+
+pipe.fit(X_train, y_train)
+
+preds = pipe.predict(X_valid)
+print("OOB Score with TfidfVectorizer: " + str(pipe.named_steps['model'].oob_score_))
+
+print(f"Accuracy Score: {accuracy_score(y_valid, preds)}")
+print(classification_report(y_valid, preds))
