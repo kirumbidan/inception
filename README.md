@@ -1,5 +1,7 @@
 ## Support Ticket Analytics & Prediction
 
+### [Try out the model](https://huggingface.co/spaces/Kirumbi/support_tickets_model)
+
 Objective  
 Use the [Kaggle Customer Support Ticket Dataset](https://www.kaggle.com/datasets/suraj520/customer-support-ticket-dataset) to:
 
